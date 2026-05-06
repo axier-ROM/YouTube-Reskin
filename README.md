@@ -45,7 +45,7 @@ You can install both extensions and toggle them on/off as needed.
 
 ![Copper-UI - Main](CopperMain.png)
 
-![Copper-UI - Player](Copper-UI.png)
+![Copper-UI - Player](CopperUI.png)
 
 ---
 
