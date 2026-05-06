@@ -37,15 +37,15 @@ You can install both extensions and toggle them on/off as needed.
 
 ### Astral-UI (Gemini Theme)
 
-![Astral-UI - Main](screenshots/astral-home.png)
+![Astral-UI - Main](AstralMain.png)
 
-![Astral-UI - Player](screenshots/astral-second.png)
+![Astral-UI - Player](Astral-UI.png)
 
 ### Copper-UI (Claude Theme)
 
-![Copper-UI - Main](screenshots/copper-home.png)
+![Copper-UI - Main](CopperMain.png)
 
-![Copper-UI - Player](screenshots/copper-second.png)
+![Copper-UI - Player](Copper-UI.png)
 
 ---
 
