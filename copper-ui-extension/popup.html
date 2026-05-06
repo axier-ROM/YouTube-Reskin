@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 260px;
+            background: #1a1915;
+            color: #e8e3db;
+            font-family: 'Georgia', serif;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #da7756;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 15px;
+            font-weight: bold;
+            color: #e8e3db;
+            letter-spacing: 0.3px;
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: #9a9590;
+            font-family: monospace;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #3a3835;
+            margin: 14px 0;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #9a9590;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #da7756;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .colors {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 1px solid #3a3835;
+        }
+
+        .label {
+            font-size: 11px;
+            color: #9a9590;
+            margin-top: 6px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <div class="logo-icon">✦</div>
+        <div>
+            <div class="logo-text">Copper UI</div>
+            <div class="logo-sub">for YouTube</div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="status">
+        <div class="dot"></div>
+        Theme active on YouTube
+    </div>
+
+    <div class="colors">
+        <div class="swatch" style="background:#da7756;" title="Claude Orange"></div>
+        <div class="swatch" style="background:#1a1915;" title="Dark BG"></div>
+        <div class="swatch" style="background:#242320;" title="Surface"></div>
+        <div class="swatch" style="background:#3a3835;" title="Border"></div>
+        <div class="swatch" style="background:#e8e3db;" title="Text"></div>
+    </div>
+    <div class="label">Inspired by Claude AI — Anthropic</div>
+</body>
+</html>

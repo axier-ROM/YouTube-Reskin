@@ -1,0 +1,411 @@
+/* ============================================
+   COPPER UI FOR YOUTUBE
+   Inspired by Claude AI colors by Anthropic
+   ============================================ */
+
+:root {
+    --claude-bg:         #1a1915;
+    --claude-surface:    #242320;
+    --claude-surface2:   #2e2c29;
+    --claude-border:     #3a3835;
+    --claude-orange:     #da7756;
+    --claude-orange-dim: #c4623f;
+    --claude-orange-glow:#da775640;
+    --claude-text:       #e8e3db;
+    --claude-text-dim:   #9a9590;
+    --claude-red:        #da7756;
+}
+
+/* ---- BASE ---- */
+html, body {
+    background: var(--claude-bg) !important;
+    color: var(--claude-text) !important;
+}
+
+/* ---- MASTHEAD / HEADER ---- */
+#masthead,
+ytd-masthead,
+#masthead-container {
+    background: var(--claude-surface) !important;
+    border-bottom: 1px solid var(--claude-border) !important;
+    box-shadow: 0 2px 20px #00000060 !important;
+}
+
+/* Search bar */
+#search-form,
+ytd-searchbox,
+#search {
+    background: var(--claude-bg) !important;
+    border: 1px solid var(--claude-border) !important;
+    border-radius: 999px !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+ytd-searchbox:focus-within,
+#search-form:focus-within {
+    border-color: var(--claude-orange) !important;
+    box-shadow: 0 0 0 3px var(--claude-orange-glow) !important;
+}
+
+input#search {
+    color: var(--claude-text) !important;
+    background: transparent !important;
+}
+
+#search-icon-legacy,
+#search-icon {
+    background: var(--claude-surface2) !important;
+    border-radius: 0 999px 999px 0 !important;
+    border-left: 1px solid var(--claude-border) !important;
+    color: var(--claude-text) !important;
+}
+
+/* ---- SIDEBAR / GUIDE ---- */
+#guide-content,
+ytd-guide-renderer,
+tp-yt-app-drawer,
+#contentContainer {
+    background: var(--claude-bg) !important;
+    border-right: 1px solid var(--claude-border) !important;
+}
+
+ytd-guide-entry-renderer {
+    border-radius: 10px !important;
+    transition: background 0.2s ease !important;
+}
+
+ytd-guide-entry-renderer:hover {
+    background: var(--claude-surface2) !important;
+}
+
+ytd-guide-entry-renderer[active] {
+    background: var(--claude-surface2) !important;
+    border-left: 3px solid var(--claude-orange) !important;
+}
+
+ytd-guide-entry-renderer[active] yt-icon,
+ytd-guide-entry-renderer[active] yt-formatted-string {
+    color: var(--claude-orange) !important;
+}
+
+/* ---- MAIN CONTENT AREA ---- */
+ytd-browse,
+ytd-page-manager,
+#content,
+#page-manager {
+    background: var(--claude-bg) !important;
+}
+
+/* ---- VIDEO CARDS ---- */
+ytd-rich-item-renderer,
+ytd-video-renderer,
+ytd-compact-video-renderer {
+    background: transparent !important;
+    border-radius: 12px !important;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+ytd-rich-item-renderer:hover,
+ytd-video-renderer:hover {
+    transform: translateY(-4px) scale(1.01) !important;
+    box-shadow: 0 12px 40px #00000080, 0 0 0 1px var(--claude-border) !important;
+    z-index: 10 !important;
+    position: relative !important;
+}
+
+/* Thumbnail wrapper */
+ytd-thumbnail,
+a.ytd-thumbnail {
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+/* Duration badge */
+.ytd-thumbnail-overlay-time-status-renderer,
+ytd-thumbnail-overlay-time-status-renderer {
+    background: var(--claude-orange) !important;
+    color: #fff !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+}
+
+/* Video title */
+#video-title,
+yt-formatted-string.ytd-rich-grid-media {
+    color: var(--claude-text) !important;
+    font-weight: 500 !important;
+    transition: color 0.2s ease !important;
+}
+
+ytd-rich-item-renderer:hover #video-title {
+    color: var(--claude-orange) !important;
+}
+
+/* Channel name / metadata */
+.ytd-channel-name,
+#metadata,
+.ytd-video-meta-block,
+ytd-video-meta-block {
+    color: var(--claude-text-dim) !important;
+}
+
+/* ---- BUTTONS ---- */
+/* Subscribe button */
+ytd-subscribe-button-renderer tp-yt-paper-button,
+yt-button-shape button[aria-label*="Subscribe"],
+.yt-spec-button-shape-next--filled {
+    background: var(--claude-orange) !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+    border: none !important;
+}
+
+ytd-subscribe-button-renderer tp-yt-paper-button:hover,
+.yt-spec-button-shape-next--filled:hover {
+    background: var(--claude-orange-dim) !important;
+    transform: scale(1.04) !important;
+    box-shadow: 0 4px 20px var(--claude-orange-glow) !important;
+}
+
+/* Like / Dislike buttons */
+ytd-toggle-button-renderer,
+.YtLikeButtonViewModelHost button,
+segmented-like-dislike-button-view-model button {
+    background: var(--claude-surface2) !important;
+    border-radius: 999px !important;
+    color: var(--claude-text) !important;
+    transition: background 0.2s, color 0.2s !important;
+}
+
+.YtLikeButtonViewModelHost button:hover,
+segmented-like-dislike-button-view-model button:hover {
+    background: var(--claude-border) !important;
+    color: var(--claude-orange) !important;
+}
+
+/* ---- VIDEO PLAYER ---- */
+#movie_player,
+.html5-video-player {
+    background: #000 !important;
+}
+
+.ytp-chrome-bottom,
+.ytp-progress-bar-container {
+    background: transparent !important;
+}
+
+/* Progress bar */
+.ytp-play-progress,
+.ytp-swatch-background-color {
+    background: var(--claude-orange) !important;
+}
+
+.ytp-load-progress {
+    background: var(--claude-surface2) !important;
+}
+
+/* Player controls */
+.ytp-button {
+    color: var(--claude-text) !important;
+    transition: color 0.2s ease !important;
+}
+
+.ytp-button:hover {
+    color: var(--claude-orange) !important;
+}
+
+/* ---- CHIPS / FILTER TABS ---- */
+yt-chip-cloud-chip-renderer,
+ytd-chip-cloud-chip-renderer {
+    background: var(--claude-surface2) !important;
+    color: var(--claude-text) !important;
+    border: 1px solid var(--claude-border) !important;
+    border-radius: 999px !important;
+    transition: all 0.2s ease !important;
+}
+
+yt-chip-cloud-chip-renderer:hover,
+ytd-chip-cloud-chip-renderer:hover {
+    background: var(--claude-border) !important;
+    border-color: var(--claude-orange) !important;
+    color: var(--claude-orange) !important;
+}
+
+yt-chip-cloud-chip-renderer[chip-style="STYLE_HOME_FILTER_SELECTED"],
+ytd-chip-cloud-chip-renderer[selected] {
+    background: var(--claude-orange) !important;
+    color: #fff !important;
+    border-color: var(--claude-orange) !important;
+}
+
+/* ---- COMMENTS ---- */
+ytd-comments,
+#comments {
+    background: transparent !important;
+}
+
+ytd-comment-thread-renderer,
+ytd-comment-renderer {
+    border-bottom: 1px solid var(--claude-border) !important;
+    padding: 12px 0 !important;
+    transition: background 0.2s !important;
+}
+
+ytd-comment-renderer:hover {
+    background: var(--claude-surface) !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+}
+
+/* Comment text */
+#content-text,
+ytd-comment-renderer #content-text {
+    color: var(--claude-text) !important;
+}
+
+/* Comment reply button */
+#reply-button-end tp-yt-paper-button,
+ytd-comment-action-buttons-renderer tp-yt-paper-button {
+    color: var(--claude-orange) !important;
+    transition: opacity 0.2s !important;
+}
+
+/* ---- RIGHT SIDEBAR (Up Next) ---- */
+ytd-watch-next-secondary-results-renderer {
+    background: transparent !important;
+}
+
+ytd-compact-video-renderer {
+    border-radius: 8px !important;
+    padding: 8px !important;
+    transition: background 0.2s ease, transform 0.2s ease !important;
+}
+
+ytd-compact-video-renderer:hover {
+    background: var(--claude-surface) !important;
+    transform: translateX(4px) !important;
+}
+
+/* ---- DESCRIPTION BOX ---- */
+ytd-text-inline-expander,
+#description,
+ytd-expandable-video-description-body-renderer {
+    background: var(--claude-surface) !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    color: var(--claude-text) !important;
+    border: 1px solid var(--claude-border) !important;
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar {
+    width: 6px !important;
+    background: var(--claude-bg) !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--claude-border) !important;
+    border-radius: 999px !important;
+    transition: background 0.2s !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--claude-orange) !important;
+}
+
+/* ---- DROPDOWNS / MENUS ---- */
+tp-yt-iron-dropdown,
+ytd-menu-popup-renderer {
+    background: var(--claude-surface) !important;
+    border: 1px solid var(--claude-border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px #00000080 !important;
+    overflow: hidden !important;
+}
+
+ytd-menu-service-item-renderer {
+    color: var(--claude-text) !important;
+    transition: background 0.15s !important;
+}
+
+ytd-menu-service-item-renderer:hover {
+    background: var(--claude-surface2) !important;
+}
+
+/* ---- NOTIFICATION BELL ---- */
+#notification-button button:hover yt-icon,
+.yt-spec-button-shape-next:hover yt-icon {
+    color: var(--claude-orange) !important;
+}
+
+/* ---- SHORTS ---- */
+ytd-reel-shelf-renderer {
+    background: var(--claude-surface) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    border: 1px solid var(--claude-border) !important;
+}
+
+/* ---- GENERAL TEXT ---- */
+yt-formatted-string,
+span,
+h3,
+h4,
+p {
+    color: inherit !important;
+}
+
+a {
+    color: var(--claude-text) !important;
+    transition: color 0.2s ease !important;
+}
+
+a:hover {
+    color: var(--claude-orange) !important;
+}
+
+/* ---- LOADING SHIMMER OVERRIDE ---- */
+.ytd-thumbnail[is-placeholder],
+[is-placeholder] {
+    background: linear-gradient(90deg, var(--claude-surface) 25%, var(--claude-surface2) 50%, var(--claude-surface) 75%) !important;
+    background-size: 200% 100% !important;
+    animation: claudeShimmer 1.5s infinite !important;
+}
+
+@keyframes claudeShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ---- FADE IN ANIMATION on page elements ---- */
+ytd-rich-item-renderer,
+ytd-video-renderer {
+    animation: claudeFadeUp 0.4s ease both !important;
+}
+
+@keyframes claudeFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger the cards */
+ytd-rich-item-renderer:nth-child(1)  { animation-delay: 0.05s !important; }
+ytd-rich-item-renderer:nth-child(2)  { animation-delay: 0.10s !important; }
+ytd-rich-item-renderer:nth-child(3)  { animation-delay: 0.15s !important; }
+ytd-rich-item-renderer:nth-child(4)  { animation-delay: 0.20s !important; }
+ytd-rich-item-renderer:nth-child(5)  { animation-delay: 0.25s !important; }
+ytd-rich-item-renderer:nth-child(6)  { animation-delay: 0.30s !important; }
+ytd-rich-item-renderer:nth-child(7)  { animation-delay: 0.35s !important; }
+ytd-rich-item-renderer:nth-child(8)  { animation-delay: 0.40s !important; }
+ytd-rich-item-renderer:nth-child(9)  { animation-delay: 0.45s !important; }
+ytd-rich-item-renderer:nth-child(10) { animation-delay: 0.50s !important; }
+ytd-rich-item-renderer:nth-child(11) { animation-delay: 0.55s !important; }
+ytd-rich-item-renderer:nth-child(12) { animation-delay: 0.60s !important; }

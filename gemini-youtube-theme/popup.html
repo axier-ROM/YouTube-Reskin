@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gemini Theme</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d1a;
+      --surface:   #1a1a35;
+      --elevated:  #1e1e3f;
+      --border:    rgba(138, 108, 255, 0.18);
+      --blue:      #4285f4;
+      --purple:    #8a6cff;
+      --pink:      #e040fb;
+      --text:      #e8eaff;
+      --muted:     #9ba3cc;
+      --grad:      linear-gradient(135deg, #4285f4, #8a6cff, #e040fb);
+    }
+
+    body {
+      width: 300px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Google Sans', sans-serif;
+      font-size: 14px;
+      overflow: hidden;
+    }
+
+    /* Ambient glow */
+    .ambient {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+      opacity: 0.25;
+    }
+    .ambient-1 { width: 180px; height: 180px; top: -60px; right: -40px; background: #8a6cff; }
+    .ambient-2 { width: 140px; height: 140px; bottom: -50px; left: -30px; background: #4285f4; }
+
+    /* Stars canvas */
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .popup-wrap {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: 15px;
+      font-weight: 600;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 18px;
+    }
+
+    /* Toggle Row */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    .toggle-label span {
+      display: block;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .toggle-label small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.25s, background 0.25s;
+    }
+
+    input:checked + .slider {
+      background: var(--grad);
+      border-color: transparent;
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(20px) translateY(-50%);
+      background: #fff;
+    }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      transition: all 0.3s;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .status-badge.active {
+      border-color: rgba(138, 108, 255, 0.4);
+      color: var(--purple);
+    }
+
+    .status-badge.active .status-dot {
+      background: var(--purple);
+      box-shadow: 0 0 6px var(--purple);
+    }
+
+    /* Info cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .info-card .icon {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .info-card .label {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      padding-top: 4px;
+    }
+
+    .footer a {
+      color: var(--purple);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient ambient-1"></div>
+  <div class="ambient ambient-2"></div>
+  <canvas id="stars"></canvas>
+
+  <div class="popup-wrap">
+    <!-- Header -->
+    <div class="header">
+      <svg class="logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4285f4"/>
+            <stop offset="0.5" stop-color="#8a6cff"/>
+            <stop offset="1" stop-color="#e040fb"/>
+          </linearGradient>
+        </defs>
+        <!-- Star / sparkle shape -->
+        <path d="M18 4 L19.8 14.2 L30 16 L19.8 17.8 L18 28 L16.2 17.8 L6 16 L16.2 14.2 Z" fill="url(#g1)"/>
+        <path d="M18 28 L18.9 32.5 L22 30 L19 33 L23 34 L18.5 33 L18 36 L17.5 33 L13 34 L17 33 L14 30 L17.1 32.5 Z" fill="url(#g1)" opacity="0.6"/>
+        <circle cx="26" cy="9" r="2" fill="url(#g1)" opacity="0.5"/>
+        <circle cx="10" cy="8" r="1.3" fill="url(#g1)" opacity="0.4"/>
+      </svg>
+      <div class="header-text">
+        <h1>Gemini Theme</h1>
+        <p>for YouTube</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Status -->
+    <div class="status-badge" id="statusBadge">
+      <div class="status-dot"></div>
+      <span id="statusText">Inactive</span>
+    </div>
+
+    <!-- Toggle -->
+    <div class="toggle-row">
+      <div class="toggle-label">
+        <span>Enable Theme</span>
+        <small>Cosmic Gemini styling</small>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="themeToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Feature cards -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="icon">✦</div>
+        <div class="label">Space ambience & starfield</div>
+      </div>
+      <div class="info-card">
+        <div class="icon">◈</div>
+        <div class="label">Gradient accents & glow</div>
+      </div>
+      <div class="info-card">
+        <div class="icon">⬡</div>
+        <div class="label">Deep space color palette</div>
+      </div>
+      <div class="info-card">
+        <div class="icon">◎</div>
+        <div class="label">Cosmic UI transitions</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Open-source — <a href="https://github.com" target="_blank">View on GitHub</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

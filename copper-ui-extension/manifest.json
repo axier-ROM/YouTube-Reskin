@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Copper UI for YouTube",
+    "version": "1.0",
+    "description": "A warm dark theme for YouTube inspired by the colors of Claude AI by Anthropic. Deep grays and burnt orange.",
+    "content_scripts": [
+        {
+            "matches": ["*://www.youtube.com/*"],
+            "css": ["theme.css"],
+            "js": ["content.js"],
+            "run_at": "document_end"
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Claude Theme for YouTube"
+    },
+    "icons": {
+        "48": "icon.png"
+    }
+}

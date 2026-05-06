@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Reskin Extensions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --claude-bg: #0d0b12;
+    --claude-surface: #16131f;
+    --claude-card: #1e1a2e;
+    --claude-orange: #da7756;
+    --claude-cream: #f5e6d3;
+    --claude-purple: #6b4fa0;
+    --claude-accent: #e8917a;
+    --claude-muted: #8b7fa8;
+
+    --gemini-bg: #050a14;
+    --gemini-surface: #091220;
+    --gemini-card: #0d1b2e;
+    --gemini-blue: #4285f4;
+    --gemini-teal: #00c4b4;
+    --gemini-pink: #e040fb;
+    --gemini-yellow: #fbbc04;
+    --gemini-red: #ea4335;
+    --gemini-text: #e8f4fd;
+    --gemini-muted: #5f8ab0;
+  }
+
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body { font-family: 'Syne', sans-serif; overflow-x: hidden; cursor: none; }
+
+  /* Custom cursor */
+  .cursor {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    mix-blend-mode: difference;
+    transition: transform 0s ease, width 0s, height 0s;
+  }
+  .cursor-trail {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    border: 1.5px solid currentColor;
+    transition: transform 0s ease;
+    opacity: 1;
+  }
+  .page-claude .cursor { background: var(--claude-orange); }
+  .page-claude .cursor-trail { color: var(--claude-accent); }
+  .page-gemini .cursor { background: var(--gemini-teal); }
+  .page-gemini .cursor-trail { color: var(--gemini-blue); }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .nav-claude { background: rgba(13,11,18,0.85); }
+  .nav-gemini { background: rgba(5,10,20,0.85); }
+  .nav-logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .nav-claude .nav-logo { color: var(--claude-orange); }
+  .nav-gemini .nav-logo { background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-teal), var(--gemini-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-pill {
+    padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
+    text-decoration: none; letter-spacing: 0.03em; transition: all 0.25s ease; cursor: none;
+  }
+  .nav-claude .nav-pill { color: var(--claude-muted); }
+  .nav-claude .nav-pill:hover, .nav-claude .nav-pill.active { background: var(--claude-orange); color: white; }
+  .nav-gemini .nav-pill { color: var(--gemini-muted); }
+  .nav-gemini .nav-pill:hover, .nav-gemini .nav-pill.active { background: linear-gradient(135deg, var(--gemini-blue), var(--gemini-teal)); color: white; }
+
+  /* Pages */
+  .page {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════ CLAUDE PAGE ═══════════════════════════════ */
+  .page-claude {
+    background: var(--claude-bg);
+    color: var(--claude-cream);
+  }
+
+  /* Claude BG noise + blobs */
+  .claude-bg-blob {
+    position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  }
+  .claude-blob-1 { width: 600px; height: 600px; background: rgba(107,79,160,0.18); top: -100px; right: -100px; animation: blobFloat1 12s ease-in-out infinite; }
+  .claude-blob-2 { width: 400px; height: 400px; background: rgba(218,119,86,0.12); bottom: 100px; left: -80px; animation: blobFloat2 15s ease-in-out infinite; }
+  .claude-blob-3 { width: 300px; height: 300px; background: rgba(218,119,86,0.08); top: 40%; left: 40%; animation: blobFloat1 18s ease-in-out infinite reverse; }
+  @keyframes blobFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-40px) scale(1.05)} }
+  @keyframes blobFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-20px,30px) scale(0.95)} }
+
+  /* Claude content */
+  .claude-content {
+    position: relative; z-index: 2;
+    padding: 140px 48px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .claude-left { display: flex; flex-direction: column; gap: 28px; }
+
+  .claude-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(218,119,86,0.12); border: 1px solid rgba(218,119,86,0.3);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--claude-orange); width: fit-content;
+    animation: fadeSlideUp 0.6s ease both;
+  }
+  .claude-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--claude-orange); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+  .claude-title {
+    font-size: clamp(38px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    animation: fadeSlideUp 0.6s 0.1s ease both;
+  }
+  .claude-title-line2 { color: var(--claude-orange); display: block; }
+
+  .claude-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px; line-height: 1.7;
+    color: var(--claude-muted);
+    max-width: 440px;
+    animation: fadeSlideUp 0.6s 0.2s ease both;
+  }
+
+  .claude-cta-group { display: flex; gap: 12px; flex-wrap: wrap; animation: fadeSlideUp 0.6s 0.3s ease both; }
+  .btn-primary-claude {
+    padding: 14px 28px; border-radius: 12px;
+    background: var(--claude-orange); color: white;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.25s ease; cursor: none;
+    box-shadow: 0 8px 32px rgba(218,119,86,0.35);
+  }
+  .btn-primary-claude:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(218,119,86,0.5); }
+  .btn-secondary-claude {
+    padding: 14px 28px; border-radius: 12px;
+    border: 1px solid rgba(218,119,86,0.3); color: var(--claude-cream);
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 14px;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.25s ease; cursor: none; background: transparent;
+  }
+  .btn-secondary-claude:hover { border-color: var(--claude-orange); background: rgba(218,119,86,0.08); }
+
+  .claude-stats {
+    display: flex; gap: 32px;
+    animation: fadeSlideUp 0.6s 0.4s ease both;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 24px;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-val { font-size: 26px; font-weight: 800; color: var(--claude-cream); }
+  .stat-label { font-size: 12px; color: var(--claude-muted); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+
+  /* Claude right — browser mockup */
+  .claude-right { display: flex; flex-direction: column; gap: 20px; animation: fadeSlideUp 0.6s 0.15s ease both; }
+
+  .browser-mockup {
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(218,119,86,0.1);
+    background: var(--claude-surface);
+    transition: transform 0.4s ease;
+  }
+  .browser-mockup:hover { transform: scale(1.02) translateY(-4px); }
+
+  .browser-bar {
+    background: #1a1626;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .bd-red { background: #ff5f57; }
+  .bd-yellow { background: #febc2e; }
+  .bd-green { background: #28c840; }
+  .browser-url {
+    flex: 1; background: rgba(255,255,255,0.05); border-radius: 6px;
+    padding: 5px 12px; font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--claude-muted);
+  }
+
+  .browser-content { position: relative; }
+  .browser-content img {width: 100%;height: 200%; }
+  .browser-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(107,79,160,0.15), rgba(218,119,86,0.1));
+    pointer-events: none;
+  }
+
+  /* Claude features strip */
+  .claude-features {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  .feature-card {
+    background: var(--claude-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 16px;
+    transition: all 0.25s ease;
+  }
+  .feature-card:hover { border-color: rgba(218,119,86,0.3); transform: translateY(-2px); }
+  .feature-icon { font-size: 20px; margin-bottom: 8px; }
+  .feature-title { font-size: 12px; font-weight: 700; color: var(--claude-cream); margin-bottom: 4px; }
+  .feature-desc { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--claude-muted); line-height: 1.5; }
+
+  /* ═══════════════════════════════ GEMINI PAGE ═══════════════════════════════ */
+  .page-gemini {
+    background: var(--gemini-bg);
+    color: var(--gemini-text);
+  }
+
+  /* Gemini star field */
+  .gemini-stars {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .star {
+    position: absolute; width: 2px; height: 2px; border-radius: 50%; background: white;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+  }
+  @keyframes twinkle { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+  /* Gemini aurora */
+  .gemini-aurora {
+    position: absolute; width: 120%; height: 60%; top: -10%; left: -10%;
+    background: conic-gradient(from 180deg at 50% 50%, #4285f410, #00c4b420, #e040fb15, #4285f410);
+    filter: blur(60px); pointer-events: none;
+    animation: auroraRotate 20s linear infinite;
+  }
+  @keyframes auroraRotate { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+
+  .gemini-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(66,133,244,0.12);
+    pointer-events: none;
+    animation: ringExpand 8s ease-in-out infinite;
+  }
+  .gr1 { width: 600px; height: 600px; top: 50%; right: -100px; transform: translateY(-50%); animation-delay: 0s; }
+  .gr2 { width: 800px; height: 800px; top: 50%; right: -200px; transform: translateY(-50%); animation-delay: 2s; }
+  .gr3 { width: 1000px; height: 1000px; top: 50%; right: -300px; transform: translateY(-50%); animation-delay: 4s; }
+  @keyframes ringExpand { 0%,100%{opacity:0.4;transform:translateY(-50%) scale(1)} 50%{opacity:0.8;transform:translateY(-50%) scale(1.03)} }
+
+  /* Gemini content */
+  .gemini-content {
+    position: relative; z-index: 2;
+    padding: 140px 48px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /* Gemini left */
+  .gemini-left { display: flex; flex-direction: column; gap: 28px; order: 2; }
+
+  .gemini-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px; border-radius: 100px; width: fit-content;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    background: rgba(66,133,244,0.12);
+    border: 1px solid rgba(66,133,244,0.3);
+    animation: fadeSlideUp 0.6s ease both;
+  }
+  .gemini-badge-text { background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .gemini-badge-spark { animation: sparkSpin 3s linear infinite; display: inline-block; }
+  @keyframes sparkSpin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+
+  .gemini-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(36px, 5vw, 62px);
+    font-weight: 900;
+    line-height: 1.05;
+    animation: fadeSlideUp 0.6s 0.1s ease both;
+  }
+  .gemini-gradient-text {
+    background: linear-gradient(135deg, var(--gemini-blue) 0%, var(--gemini-teal) 40%, var(--gemini-pink) 80%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    display: block;
+  }
+
+  .gemini-desc {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px; line-height: 1.75;
+    color: var(--gemini-muted);
+    max-width: 440px;
+    animation: fadeSlideUp 0.6s 0.2s ease both;
+  }
+
+  .gemini-cta-group { display: flex; gap: 12px; flex-wrap: wrap; animation: fadeSlideUp 0.6s 0.3s ease both; }
+  .btn-primary-gemini {
+    padding: 14px 28px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--gemini-blue), var(--gemini-teal));
+    color: white; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.25s ease; cursor: none;
+    box-shadow: 0 8px 32px rgba(66,133,244,0.35);
+  }
+  .btn-primary-gemini:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,196,180,0.4); }
+  .btn-secondary-gemini {
+    padding: 14px 28px; border-radius: 12px;
+    border: 1px solid rgba(66,133,244,0.3); color: var(--gemini-text);
+    font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 14px;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.25s ease; cursor: none; background: transparent;
+  }
+  .btn-secondary-gemini:hover { border-color: var(--gemini-teal); background: rgba(0,196,180,0.08); }
+
+  /* Gemini color chips */
+  .gemini-palette {
+    display: flex; gap: 8px; align-items: center;
+    animation: fadeSlideUp 0.6s 0.35s ease both;
+  }
+  .palette-chip {
+    width: 28px; height: 28px; border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+  }
+  .palette-chip:hover { transform: scale(1.3); }
+  .pc-blue { background: var(--gemini-blue); }
+  .pc-teal { background: var(--gemini-teal); }
+  .pc-pink { background: var(--gemini-pink); }
+  .pc-yellow { background: var(--gemini-yellow); }
+  .palette-label { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: var(--gemini-muted); margin-left: 4px; }
+
+  /* Gemini right */
+  .gemini-right { display: flex; flex-direction: column; gap: 20px; order: 1; animation: fadeSlideUp 0.6s 0.15s ease both; }
+
+  .gemini-browser-mockup {
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(66,133,244,0.15);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 60px rgba(66,133,244,0.08);
+    background: var(--gemini-surface);
+    transition: transform 0.4s ease;
+  }
+  .gemini-browser-mockup:hover { transform: scale(1.02) translateY(-4px); }
+
+  .gemini-browser-bar {
+    background: #0a1628;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(66,133,244,0.1);
+  }
+  .gemini-url {
+    flex: 1; background: rgba(255,255,255,0.04); border-radius: 6px;
+    padding: 5px 12px; font-family: 'Space Grotesk', monospace; font-size: 11px;
+    color: var(--gemini-muted);
+  }
+  .gemini-browser-content { position: relative; }
+  .gemini-browser-content img { width: 100%; display: block; }
+  .gemini-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(66,133,244,0.2), rgba(0,196,180,0.1), rgba(224,64,251,0.08));
+    pointer-events: none;
+  }
+
+  /* Gemini color feature cards */
+  .gemini-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .gemini-feat-card {
+    border-radius: 12px; padding: 14px;
+    transition: all 0.25s ease;
+    border: 1px solid transparent;
+  }
+  .gemini-feat-card:hover { transform: translateY(-3px); }
+  .gfc-blue { background: rgba(66,133,244,0.1); border-color: rgba(66,133,244,0.2); }
+  .gfc-teal { background: rgba(0,196,180,0.1); border-color: rgba(0,196,180,0.2); }
+  .gfc-pink { background: rgba(224,64,251,0.1); border-color: rgba(224,64,251,0.2); }
+  .gfc-yellow { background: rgba(251,188,4,0.1); border-color: rgba(251,188,4,0.2); }
+  .gfc-icon { font-size: 18px; margin-bottom: 6px; }
+  .gfc-title { font-size: 11px; font-weight: 700; margin-bottom: 3px; font-family: 'Nunito', sans-serif; }
+  .gfc-blue .gfc-title { color: var(--gemini-blue); }
+  .gfc-teal .gfc-title { color: var(--gemini-teal); }
+  .gfc-pink .gfc-title { color: var(--gemini-pink); }
+  .gfc-yellow .gfc-title { color: var(--gemini-yellow); }
+  .gfc-desc { font-family: 'Space Grotesk', sans-serif; font-size: 10px; color: var(--gemini-muted); line-height: 1.5; }
+
+  /* Shared animations */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    z-index: 10; animation: bounce 2s ease-in-out infinite;
+  }
+  .scroll-text { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; }
+  .scroll-arrow { font-size: 18px; opacity: 0.4; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+  .page-claude .scroll-text, .page-claude .scroll-arrow { color: var(--claude-cream); }
+  .page-gemini .scroll-text, .page-gemini .scroll-arrow { color: var(--gemini-text); }
+
+  /* Code tag decoration */
+  .code-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--claude-purple);
+    opacity: 0.5; user-select: none;
+    animation: fadeSlideUp 0.6s 0.5s ease both;
+  }
+
+  /* Gemini divider sparkle */
+  .divider-sparkle {
+    display: flex; gap: 6px; align-items: center;
+    animation: fadeSlideUp 0.6s 0.4s ease both;
+  }
+  .sparkle-line { height: 1px; flex: 1; }
+  .sl-blue { background: linear-gradient(90deg, transparent, var(--gemini-blue), transparent); }
+  .sl-teal { background: linear-gradient(90deg, transparent, var(--gemini-teal), transparent); }
+  .sparkle-gem { font-size: 16px; }
+
+  /* Section label */
+  .section-label {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+    animation: fadeSlideUp 0.6s 0.45s ease both;
+  }
+  .section-label-line { height: 1px; width: 32px; }
+  .page-claude .section-label { color: var(--claude-muted); }
+  .page-claude .section-label-line { background: var(--claude-muted); }
+  .page-gemini .section-label { color: var(--gemini-muted); }
+  .page-gemini .section-label-line { background: var(--gemini-muted); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .claude-content, .gemini-content {
+      grid-template-columns: 1fr; padding: 120px 24px 80px;
+    }
+    .gemini-left { order: 2; }
+    .gemini-right { order: 1; }
+    .claude-features { grid-template-columns: repeat(3, 1fr); }
+    .gemini-features { grid-template-columns: repeat(2, 1fr); }
+    nav { padding: 16px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- Navigation -->
+<nav class="nav-claude" id="mainNav">
+  <div class="nav-logo" id="navLogo">YT Reskin</div>
+  <div class="nav-links">
+    <a href="#claude" class="nav-pill active" id="navClaude">Claude Theme</a>
+    <a href="#gemini" class="nav-pill" id="navGemini">Gemini Theme</a>
+  </div>
+</nav>
+
+<!-- ═══════════ PAGE 1: CLAUDE ═══════════ -->
+<section class="page page-claude" id="claude">
+  <div class="claude-bg-blob claude-blob-1"></div>
+  <div class="claude-bg-blob claude-blob-2"></div>
+  <div class="claude-bg-blob claude-blob-3"></div>
+
+  <div class="claude-content">
+    <div class="claude-left">
+      <div class="claude-badge">
+        <span class="claude-badge-dot"></span>
+        Chrome Extension — v1.0
+      </div>
+
+      <h1 class="claude-title">
+        YouTube, but
+        <span class="claude-title-line2">Claude-brained.</span>
+      </h1>
+
+      <p class="claude-desc">
+        A browser extension that reimagines YouTube's interface with Claude's warm, thoughtful design language — burnt sienna tones, cozy typography, and that signature amber glow.
+      </p>
+
+      <div class="code-tag">&lt;extension type="claude-theme" version="1.0" /&gt;</div>
+
+      <div class="claude-cta-group">
+        <a href="https://github.com" class="btn-primary-claude">
+          ⬇ Install Extension
+        </a>
+        <a href="https://github.com" class="btn-secondary-claude">
+          ★ View Source
+        </a>
+      </div>
+
+      <div class="claude-stats">
+        <div class="stat">
+          <span class="stat-val">100%</span>
+          <span class="stat-label">Free</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">YT v3</span>
+          <span class="stat-label">Compatible</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">0ms</span>
+          <span class="stat-label">Load Impact</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="claude-right">
+      <div class="browser-mockup">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot bd-red"></div>
+            <div class="browser-dot bd-yellow"></div>
+            <div class="browser-dot bd-green"></div>
+          </div>
+          <div class="browser-url">youtube.com — Claude Theme Active ✦</div>
+        </div>
+        <div class="browser-content">
+          <img src="Copper-UI.png" alt="YouTube with Claude theme applied">
+          <div class="browser-overlay"></div>
+        </div>
+      </div>
+
+      <div class="claude-features">
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <div class="feature-title">Warm Palette</div>
+          <div class="feature-desc">Signature amber & sienna tones replacing YouTube's red</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✦</div>
+          <div class="feature-title">Cozy Type</div>
+          <div class="feature-desc">Claude's thoughtful typography applied sitewide</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌙</div>
+          <div class="feature-title">Dark Mode</div>
+          <div class="feature-desc">Deep charcoal tones, easy on the eyes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span class="scroll-text">Gemini Edition ↓</span>
+    <span class="scroll-arrow">↓</span>
+  </div>
+</section>
+
+<!-- ═══════════ PAGE 2: GEMINI ═══════════ -->
+<section class="page page-gemini" id="gemini">
+  <!-- Stars -->
+  <div class="gemini-stars" id="stars"></div>
+  <div class="gemini-aurora"></div>
+  <div class="gemini-ring gr1"></div>
+  <div class="gemini-ring gr2"></div>
+  <div class="gemini-ring gr3"></div>
+
+  <div class="gemini-content">
+    <div class="gemini-right">
+      <div class="gemini-browser-mockup">
+        <div class="gemini-browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot bd-red"></div>
+            <div class="browser-dot bd-yellow"></div>
+            <div class="browser-dot bd-green"></div>
+          </div>
+          <div class="gemini-url">youtube.com — ✦ Gemini Theme Active</div>
+        </div>
+        <div class="gemini-browser-content">
+          <img src="Astral-UI.png" alt="YouTube with Gemini theme applied" style="filter: hue-rotate(0deg) saturate(1) brightness(1);">
+          <div class="gemini-overlay"></div>
+        </div>
+      </div>
+
+      <div class="gemini-features">
+        <div class="gemini-feat-card gfc-blue">
+          <div class="gfc-icon">💠</div>
+          <div class="gfc-title">Google Blue</div>
+          <div class="gfc-desc">Core Gemini indigo replacing YT red</div>
+        </div>
+        <div class="gemini-feat-card gfc-teal">
+          <div class="gfc-icon">🌊</div>
+          <div class="gfc-title">Aurora Teal</div>
+          <div class="gfc-desc">Flowing accent gradients everywhere</div>
+        </div>
+        <div class="gemini-feat-card gfc-pink">
+          <div class="gfc-icon">✦</div>
+          <div class="gfc-title">Spark Pink</div>
+          <div class="gfc-desc">Highlight and hover state magic</div>
+        </div>
+        <div class="gemini-feat-card gfc-yellow">
+          <div class="gfc-icon">⭐</div>
+          <div class="gfc-title">Star Gold</div>
+          <div class="gfc-desc">Notifications & interactive states</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gemini-left">
+      <div class="gemini-badge">
+        <span class="gemini-badge-spark">✦</span>
+        <span class="gemini-badge-text">Chrome Extension — v1.0</span>
+      </div>
+
+      <h1 class="gemini-title">
+        YouTube,
+        <span class="gemini-gradient-text">Gemini-fied.</span>
+      </h1>
+
+      <p class="gemini-desc">
+        A browser extension that transforms YouTube's interface with Gemini's cosmic, multi-chromatic design language — flowing blue-teal-pink gradients, fluid motion, and starfield depth.
+      </p>
+
+      <div class="divider-sparkle">
+        <div class="sparkle-line sl-blue"></div>
+        <span class="sparkle-gem">✦</span>
+        <div class="sparkle-line sl-teal"></div>
+      </div>
+
+      <div class="gemini-palette">
+        <div class="palette-chip pc-blue" title="Google Blue"></div>
+        <div class="palette-chip pc-teal" title="Aurora Teal"></div>
+        <div class="palette-chip pc-pink" title="Spark Pink"></div>
+        <div class="palette-chip pc-yellow" title="Star Gold"></div>
+        <span class="palette-label">Gemini color system</span>
+      </div>
+
+      <div class="gemini-cta-group">
+        <a href="https://github.com" class="btn-primary-gemini">
+          ✦ Install Extension
+        </a>
+        <a href="https://github.com" class="btn-secondary-gemini">
+          ★ View Source
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator" style="bottom: 32px;">
+    <span class="scroll-text">Back to top ↑</span>
+    <span class="scroll-arrow" style="transform: rotate(180deg); display: block;">↓</span>
+  </div>
+</section>
+
+<script>
+  // Stars
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      --dur: ${2 + Math.random() * 4}s;
+      --delay: ${Math.random() * 4}s;
+      opacity: ${0.1 + Math.random() * 0.5};
+      width: ${Math.random() > 0.8 ? 3 : 2}px;
+      height: ${Math.random() > 0.8 ? 3 : 2}px;
+    `;
+    starsContainer.appendChild(star);
+  }
+
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursorTrail');
+  let mx = 0, my = 0, tx = 0, ty = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.transform = `translate(${mx - 9}px, ${my - 9}px)`; });
+  (function animTrail() {
+    tx += (mx - tx) * 0.5; ty += (my - ty) * 0.5;
+    trail.style.transform = `translate(${tx - 20}px, ${ty - 20}px)`;
+    requestAnimationFrame(animTrail);
+  })();
+
+  // Nav switch on scroll
+  const nav = document.getElementById('mainNav');
+  const navLogo = document.getElementById('navLogo');
+  const navClaude = document.getElementById('navClaude');
+  const navGemini = document.getElementById('navGemini');
+  const claudeSection = document.getElementById('claude');
+
+  window.addEventListener('scroll', () => {
+    const claudeBottom = claudeSection.getBoundingClientRect().bottom;
+    const isGemini = claudeBottom < window.innerHeight * 0.5;
+    nav.className = isGemini ? 'nav-gemini' : 'nav-claude';
+    if (isGemini) {
+      navClaude.classList.remove('active');
+      navGemini.classList.add('active');
+    } else {
+      navGemini.classList.remove('active');
+      navClaude.classList.add('active');
+    }
+  });
+
+  // Smooth scroll nav
+  document.querySelectorAll('.nav-pill').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Hover cursor scale
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.style.transform += ' scale(1.5)');
+    el.addEventListener('mouseleave', () => {});
+  });
+</script>
+</body>
+</html>

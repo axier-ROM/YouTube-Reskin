@@ -1,0 +1,416 @@
+/* ============================================
+   Gemini Theme for YouTube
+   A cosmic, space-inspired UI transformation
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&family=Google+Sans+Display:wght@400;500&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --gem-bg-primary:    #0d0d1a;
+  --gem-bg-secondary:  #12122a;
+  --gem-bg-surface:    #1a1a35;
+  --gem-bg-elevated:   #1e1e3f;
+  --gem-border:        rgba(138, 108, 255, 0.15);
+  --gem-border-glow:   rgba(138, 108, 255, 0.35);
+
+  --gem-blue:          #4285f4;
+  --gem-purple:        #8a6cff;
+  --gem-pink:          #e040fb;
+  --gem-teal:          #00bcd4;
+  --gem-gradient:      linear-gradient(135deg, #4285f4, #8a6cff, #e040fb);
+  --gem-gradient-soft: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(138,108,255,0.15), rgba(224,64,251,0.15));
+
+  --gem-text-primary:   #e8eaff;
+  --gem-text-secondary: #9ba3cc;
+  --gem-text-muted:     #5c6385;
+
+  --gem-radius:     12px;
+  --gem-radius-lg:  20px;
+  --gem-radius-pill: 999px;
+}
+
+/* ── Base & Body ── */
+html, body {
+  background-color: var(--gem-bg-primary) !important;
+  font-family: 'Google Sans', sans-serif !important;
+  color: var(--gem-text-primary) !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--gem-bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: var(--gem-purple);
+  border-radius: var(--gem-radius-pill);
+}
+
+/* ── Header / Masthead ── */
+#masthead,
+ytd-masthead,
+#masthead-container {
+  background: rgba(13, 13, 26, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--gem-border) !important;
+  box-shadow: 0 1px 30px rgba(66, 133, 244, 0.08) !important;
+}
+
+/* ── Search Bar ── */
+#search-form,
+ytd-searchbox,
+#search {
+  background: var(--gem-bg-surface) !important;
+  border-radius: var(--gem-radius-pill) !important;
+  border: 1px solid var(--gem-border) !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+#search-form:focus-within,
+ytd-searchbox:focus-within {
+  border-color: var(--gem-purple) !important;
+  box-shadow: 0 0 0 3px rgba(138, 108, 255, 0.2) !important;
+}
+
+ytd-searchbox #search-input input,
+input#search {
+  background: transparent !important;
+  color: var(--gem-text-primary) !important;
+  caret-color: var(--gem-purple) !important;
+}
+
+#search-icon-legacy,
+ytd-searchbox #search-icon {
+  background: var(--gem-gradient) !important;
+  border-radius: 0 var(--gem-radius-pill) var(--gem-radius-pill) 0 !important;
+  border: none !important;
+}
+
+#search-icon-legacy yt-icon,
+ytd-searchbox #search-icon yt-icon {
+  color: #fff !important;
+}
+
+/* ── Logo Area — leave it untouched ── */
+
+/* ── Sidebar / Guide ── */
+#guide-content,
+ytd-guide-renderer,
+tp-yt-app-drawer,
+#contentContainer.ytd-app-drawer {
+  background: var(--gem-bg-secondary) !important;
+  border-right: 1px solid var(--gem-border) !important;
+}
+
+ytd-guide-entry-renderer {
+  border-radius: var(--gem-radius) !important;
+  transition: background 0.15s !important;
+}
+
+ytd-guide-entry-renderer:hover {
+  background: var(--gem-bg-surface) !important;
+}
+
+ytd-guide-entry-renderer[active] {
+  background: var(--gem-gradient-soft) !important;
+  border-left: 3px solid var(--gem-purple) !important;
+}
+
+ytd-guide-entry-renderer a,
+ytd-guide-entry-renderer yt-formatted-string {
+  color: var(--gem-text-primary) !important;
+}
+
+/* ── Home Page / Feed ── */
+ytd-browse,
+#contents.ytd-rich-grid-renderer,
+ytd-page-manager,
+ytd-watch-flexy {
+  background: var(--gem-bg-primary) !important;
+}
+
+
+/* ── Video Cards ── */
+ytd-rich-item-renderer,
+ytd-video-renderer,
+ytd-compact-video-renderer {
+  border-radius: var(--gem-radius-lg) !important;
+  overflow: hidden;
+  box-sizing: border-box !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+ytd-rich-item-renderer:hover,
+ytd-video-renderer:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 32px rgba(138, 108, 255, 0.2) !important;
+}
+
+ytd-thumbnail,
+#thumbnail {
+  border-radius: var(--gem-radius) !important;
+}
+
+/* Thumbnail shimmer overlay */
+ytd-thumbnail::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(138,108,255,0.08));
+  pointer-events: none;
+  border-radius: var(--gem-radius);
+}
+
+/* ── Video Metadata Text ── */
+#video-title,
+yt-formatted-string.ytd-video-meta-block,
+ytd-video-meta-block,
+#metadata-line span {
+  color: var(--gem-text-primary) !important;
+}
+
+#owner-text a,
+#channel-name a,
+.ytd-channel-name a {
+  color: var(--gem-text-secondary) !important;
+}
+
+/* ── Chips / Filter Pills ── */
+yt-chip-cloud-chip-renderer,
+ytd-feed-filter-chip-bar-renderer yt-chip-cloud-chip-renderer {
+  background: var(--gem-bg-surface) !important;
+  border: 1px solid var(--gem-border) !important;
+  border-radius: var(--gem-radius-pill) !important;
+  color: var(--gem-text-primary) !important;
+  transition: background 0.15s, border-color 0.15s !important;
+}
+
+yt-chip-cloud-chip-renderer[selected],
+yt-chip-cloud-chip-renderer:hover {
+  background: var(--gem-gradient) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+/* ── Buttons ── */
+yt-button-renderer[is-paper-button] paper-button,
+ytd-button-renderer .yt-spec-button-shape-next,
+#subscribe-button ytd-subscribe-button-renderer paper-button,
+tp-yt-paper-button {
+  border-radius: var(--gem-radius-pill) !important;
+  transition: opacity 0.15s, box-shadow 0.15s !important;
+}
+
+/* Subscribe button */
+ytd-subscribe-button-renderer paper-button,
+ytd-subscribe-button-renderer yt-button-shape button {
+  background: var(--gem-gradient) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--gem-radius-pill) !important;
+}
+
+/* Subscribed state */
+ytd-subscribe-button-renderer[subscribed] paper-button,
+ytd-subscribe-button-renderer[subscribed] yt-button-shape button {
+  background: var(--gem-bg-surface) !important;
+  border: 1px solid var(--gem-border) !important;
+  color: var(--gem-text-primary) !important;
+}
+
+/* Like button active */
+#segmented-like-button button[aria-pressed="true"],
+ytd-toggle-button-renderer[is-toggled] yt-button-shape button {
+  color: var(--gem-blue) !important;
+}
+
+/* ── Watch Page ── */
+#primary,
+ytd-watch-flexy #primary-inner {
+  background: var(--gem-bg-primary) !important;
+}
+
+#secondary,
+ytd-watch-flexy #secondary-inner {
+  background: var(--gem-bg-primary) !important;
+}
+
+/* Player container glow */
+#movie_player,
+.html5-video-player {
+  border-radius: var(--gem-radius-lg) !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 60px rgba(66, 133, 244, 0.12), 0 0 120px rgba(138, 108, 255, 0.06) !important;
+}
+
+/* ── Comments ── */
+ytd-comments,
+ytd-comment-thread-renderer,
+ytd-comment-renderer {
+  background: transparent !important;
+}
+
+ytd-comment-renderer #body {
+  background: var(--gem-bg-surface) !important;
+  border-radius: var(--gem-radius) !important;
+  padding: 12px !important;
+  border: 1px solid var(--gem-border) !important;
+  margin-bottom: 8px !important;
+}
+
+#author-text a,
+ytd-comment-renderer #author-text {
+  color: var(--gem-purple) !important;
+}
+
+ytd-comment-renderer #content-text {
+  color: var(--gem-text-primary) !important;
+}
+
+/* Comment input */
+#simple-box,
+ytd-comment-simplebox-renderer {
+  background: var(--gem-bg-surface) !important;
+  border-radius: var(--gem-radius) !important;
+  border: 1px solid var(--gem-border) !important;
+}
+
+/* ── Description Box ── */
+ytd-text-inline-expander,
+#description-inline-expander,
+ytd-structured-description-content-renderer {
+  background: var(--gem-bg-surface) !important;
+  border-radius: var(--gem-radius-lg) !important;
+  padding: 16px !important;
+  border: 1px solid var(--gem-border) !important;
+}
+
+/* ── Channel Page ── */
+ytd-c4-tabbed-header-renderer {
+  background: var(--gem-bg-secondary) !important;
+}
+
+#channel-header-container {
+  background: var(--gem-bg-secondary) !important;
+}
+
+/* ── Dropdown Menus & Popups ── */
+tp-yt-iron-dropdown .dropdown-content,
+ytd-popup-container paper-listbox,
+ytd-menu-popup-renderer {
+  background: var(--gem-bg-elevated) !important;
+  border: 1px solid var(--gem-border-glow) !important;
+  border-radius: var(--gem-radius-lg) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--gem-border) !important;
+}
+
+ytd-menu-service-item-renderer,
+tp-yt-paper-item {
+  color: var(--gem-text-primary) !important;
+  border-radius: var(--gem-radius) !important;
+  transition: background 0.15s !important;
+}
+
+ytd-menu-service-item-renderer:hover,
+tp-yt-paper-item:hover {
+  background: var(--gem-bg-surface) !important;
+}
+
+/* ── Notification Bell Area ── */
+ytd-notification-topbar-button-renderer {
+  color: var(--gem-text-primary) !important;
+}
+
+/* ── Generic text cleanup ── */
+yt-formatted-string,
+span, p, h1, h2, h3, h4, label {
+  color: inherit !important;
+}
+
+a { color: var(--gem-blue) !important; }
+a:hover { color: var(--gem-purple) !important; }
+
+/* ── SVG Icons ── */
+yt-icon,
+yt-icon-button,
+#button.ytd-topbar-menu-button-renderer {
+  color: var(--gem-text-secondary) !important;
+  transition: color 0.15s !important;
+}
+
+yt-icon:hover,
+yt-icon-button:hover {
+  color: var(--gem-purple) !important;
+}
+
+/* ── Progress Bar ── */
+#progress,
+.ytp-play-progress,
+.ytp-load-progress {
+  background: var(--gem-gradient) !important;
+}
+
+.ytp-progress-bar-container:hover .ytp-play-progress {
+  box-shadow: 0 0 8px var(--gem-purple) !important;
+}
+
+/* ── Player Controls ── */
+.ytp-chrome-bottom {
+  background: linear-gradient(to top, rgba(13,13,26,0.95), transparent) !important;
+}
+
+.ytp-button { color: var(--gem-text-primary) !important; }
+
+/* ── Skeleton Loaders ── */
+.ytd-ghost-card-renderer,
+#placeholder {
+  background: linear-gradient(90deg, var(--gem-bg-surface) 25%, var(--gem-bg-elevated) 50%, var(--gem-bg-surface) 75%) !important;
+  background-size: 400% 100% !important;
+  animation: gemShimmer 1.5s ease infinite !important;
+}
+
+@keyframes gemShimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Shorts ── */
+ytd-reel-shelf-renderer {
+  background: var(--gem-bg-secondary) !important;
+  border-radius: var(--gem-radius-lg) !important;
+  border: 1px solid var(--gem-border) !important;
+  padding: 12px !important;
+}
+
+/* ── Cosmic Ambient Background Pulse ── */
+ytd-app::before {
+  content: '';
+  position: fixed;
+  top: -30vh;
+  left: -20vw;
+  width: 70vw;
+  height: 70vh;
+  background: radial-gradient(ellipse, rgba(66, 133, 244, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: cosmicDrift 20s ease-in-out infinite alternate;
+}
+
+ytd-app::after {
+  content: '';
+  position: fixed;
+  bottom: -20vh;
+  right: -20vw;
+  width: 60vw;
+  height: 60vh;
+  background: radial-gradient(ellipse, rgba(224, 64, 251, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: cosmicDrift 25s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes cosmicDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(5%, 5%) scale(1.1); }
+}
