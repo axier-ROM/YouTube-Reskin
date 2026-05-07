@@ -32,8 +32,7 @@
     --gemini-muted: #5f8ab0;
   }
 
-  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
-  html.is-switching { scroll-snap-type: none; }
+  html { scroll-behavior: auto; }
   body { font-family: 'Syne', sans-serif; overflow-x: hidden; }
 
   /* Custom cursor */
@@ -91,7 +90,6 @@
   /* Pages */
   .page {
     min-height: 100vh;
-    scroll-snap-align: start;
     position: relative;
     overflow: hidden;
   }
@@ -808,7 +806,6 @@
     }
 
     cancelAnimationFrame(sectionSwitchFrame);
-    document.documentElement.classList.add('is-switching');
 
     const duration = Math.min(950, Math.max(520, Math.abs(distance) * 0.45));
     const startedAt = performance.now();
@@ -822,7 +819,6 @@
         return;
       }
 
-      document.documentElement.classList.remove('is-switching');
       history.replaceState(null, '', `#${target.id}`);
       requestThemeUpdate();
     }
