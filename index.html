@@ -751,10 +751,14 @@
   const nav = document.getElementById('mainNav');
   const navClaude = document.getElementById('navClaude');
   const navGemini = document.getElementById('navGemini');
+  const claudeSection = document.getElementById('claude');
   const geminiSection = document.getElementById('gemini');
+  const themeSections = [claudeSection, geminiSection];
   let activeTheme = '';
   let scrollTicking = false;
   let sectionSwitchFrame = 0;
+  let softSnapTimer = 0;
+  let isAutoScrolling = false;
 
   function setActiveTheme(theme) {
     if (theme === activeTheme) return;
@@ -782,32 +786,42 @@
 
   setActiveTheme('claude');
   updateThemeFromScroll();
-  window.addEventListener('scroll', requestThemeUpdate, { passive: true });
+  window.addEventListener('scroll', () => {
+    requestThemeUpdate();
+    scheduleSoftSnap();
+  }, { passive: true });
   window.addEventListener('resize', requestThemeUpdate);
 
   function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
-  function switchSection(target) {
+  function animateToSection(target, options = {}) {
     if (!target) return;
 
     const targetTheme = target.id === 'gemini' ? 'gemini' : 'claude';
     const startY = window.scrollY;
     const endY = target.getBoundingClientRect().top + startY;
     const distance = endY - startY;
+    const shouldUpdateHash = options.updateHash !== false;
 
     setActiveTheme(targetTheme);
     if (Math.abs(distance) < 2 || prefersReducedMotion) {
+      isAutoScrolling = true;
       window.scrollTo(0, endY);
-      history.replaceState(null, '', `#${target.id}`);
+      if (shouldUpdateHash) history.replaceState(null, '', `#${target.id}`);
       requestThemeUpdate();
+      window.setTimeout(() => {
+        isAutoScrolling = false;
+      }, 120);
       return;
     }
 
     cancelAnimationFrame(sectionSwitchFrame);
+    clearTimeout(softSnapTimer);
+    isAutoScrolling = true;
 
-    const duration = Math.min(950, Math.max(520, Math.abs(distance) * 0.45));
+    const duration = options.duration || Math.min(1100, Math.max(680, Math.abs(distance) * 0.5));
     const startedAt = performance.now();
 
     function step(now) {
@@ -819,11 +833,29 @@
         return;
       }
 
-      history.replaceState(null, '', `#${target.id}`);
+      isAutoScrolling = false;
+      if (shouldUpdateHash) history.replaceState(null, '', `#${target.id}`);
       requestThemeUpdate();
     }
 
     sectionSwitchFrame = requestAnimationFrame(step);
+  }
+
+  function scheduleSoftSnap() {
+    if (isAutoScrolling || prefersReducedMotion) return;
+
+    clearTimeout(softSnapTimer);
+    softSnapTimer = window.setTimeout(() => {
+      const nearestSection = themeSections.reduce((nearest, section) => {
+        return Math.abs(section.getBoundingClientRect().top) < Math.abs(nearest.getBoundingClientRect().top)
+          ? section
+          : nearest;
+      }, themeSections[0]);
+      const distanceFromTop = Math.abs(nearestSection.getBoundingClientRect().top);
+
+      if (distanceFromTop > window.innerHeight * 0.38) return;
+      animateToSection(nearestSection, { duration: 900, updateHash: false });
+    }, 280);
   }
 
   // Smooth section switching
@@ -831,7 +863,7 @@
     control.addEventListener('click', e => {
       e.preventDefault();
       const selector = control.getAttribute('href') || control.dataset.target;
-      switchSection(document.querySelector(selector));
+      animateToSection(document.querySelector(selector));
     });
   });
 </script>
